@@ -38,3 +38,10 @@ YTS_LIST_UPCOMING = {
     'jsonp': 'list_upcoming.jsonp',
     'xml': 'list_upcoming.xml'
 }
+
+# Thread Workers
+YTS_WEB_T_WORKERS = 10
+
+# Args Builder
+YTS_DESC_ARGS = "This program ties into YTS api and builds a database. \
+It can also send magnetlinks to transmission for downloading"

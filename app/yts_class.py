@@ -6,12 +6,15 @@ from config import YTS_API_BASE, YTS_LIST_MOVIES_ENDPOINTS, YTS_LIST_UPCOMING
 
 
 class Rawyts:
+    """
+    This is a python class wrapping the YTS v2 API. Most used methods are currently implemented
+    """
     def __init__(self):
         pass
 
     def raw_upcoming(self):
         """
-        This function pulls the upcomming movies list from yst
+        This function pulls the upcoming movies list from yst
 
 		Args:
 		  None
@@ -44,8 +47,15 @@ class Rawyts:
 		    acceptable methods are: desc, asc
 
 		Returns:
-		    returns a dictionary as first # and page count as second #. first entry is the total list of movies
-		    'MovieCount', the second is the list of movies with dictionaries per movie 'MovieList'.
+		    returns a dictionary of dictionaries. The containing dictionary contains the keys "status", "status_message"
+		    , and "data". "data" contains a dictionary with the following keys: "movie_count", "limit" (this is the
+		    number of movies per page), "page_number" (the current page you are on), and "movies". "movies" contains the
+		    actual movie data and contains the following keys: "id", "url", "imdb_code", "title", "title_long", "slug",
+		    "year", "rating", "runtime", "genres" (This is a list for the value), "language", "mpa_rating",
+		    "small_cover_image", "medium_cover_image", "state", "torrents". "torrents" contains a list of dictionaries
+		    containing all the information for the actual torrents. The keys for each dictionary in the list are: "url",
+		    "hash", "quality", "seeds", "peers", "size", "size_bytes", "date_uploaded", "date_uploaded_unix".
+
 		    Page count is determined by dividing movie count by limit and adding 1 if the value is float #
 
 		Raises:
@@ -85,11 +95,11 @@ class Rawyts:
         dic = res.json()
         return dic
 
-    def raw_requests_page_count(self, limit):
+    def raw_requests_page_count(self, limit=20):
         payload = {'limit': limit}
         res = get(YTS_API_BASE + YTS_LIST_MOVIES_ENDPOINTS['json'], params=payload)
         dic = res.json()
-        pagecount = dic['MovieCount'] / limit
+        pagecount = dic['data']['movie_count'] / limit
         if isinstance(pagecount, float):
             pagecount += 1
 
