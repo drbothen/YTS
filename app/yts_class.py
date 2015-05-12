@@ -27,7 +27,7 @@ class Rawyts:
         dic = res.json()
         return dic
 
-    def raw_movie_list(self, limit=20, page=1, quality='ALL', rating=0, genre='ALL', sort='date', order='desc'):
+    def raw_movie_list(self, limit=20, page=1, quality='ALL', rating=0, genre='ALL', sort='date_added', order='desc'):
         """
         This function will retrieve all movies that match the given parameters
 
@@ -61,8 +61,8 @@ class Rawyts:
 		Raises:
 		    currently no error checking is performed
 		"""
-        payload = {'limit': limit, 'set': page, 'quality': quality, 'rating': rating, 'genre': genre, 'sort': sort,
-                   'order': order}
+        payload = {'limit': limit, 'page': page, 'quality': quality, 'minimum_rating': rating, 'genre': genre, 'sort_by': sort,
+                   'order_by': order}
         res = get(YTS_API_BASE + YTS_LIST_MOVIES_ENDPOINTS['json'], params=payload)
         dic = res.json()
         # pagecount = dic['MovieCount']/limit
