@@ -1,7 +1,7 @@
 __author__ = 'jmagady'
 
 from app import yts_api, parg, s
-from app.models import YTS_MOVIE, YTS_YEAR, YTS_MPA_RATING
+from app.models import YTS_MOVIE, YTS_YEAR, YTS_MPA_RATING, YTS_LIBRARY_STATUS, YTS_GENRES, YTS_LANG, YTS_QUALITY, YTS_TORRENT_HASH
 import sys
 
 def main():
@@ -28,6 +28,14 @@ for page in range(1, pagecount + 1):
                            runtime=movie['runtime'])
         mentry.year = YTS_YEAR.get(s, movie['year'])
         mentry.mpa_rating = YTS_MPA_RATING.get(s, movie['mpa_rating'])
+        mentry.state = YTS_LIBRARY_STATUS.get(s, movie['state'])
+        mentry.lang = YTS_LANG.get(s, movie['language'])
+        lgenre = []
+        for genre in movie['genres']:
+            lgenre.append(YTS_GENRES.get(s, genre))
+        mentry.genres = lgenre
+
+        print("The movie: {Movie} has {tnum} torrents".format(Movie=movie['title'], tnum=len(movie['torrents'])))
         s.add(mentry)
         s.commit()
 
