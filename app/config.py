@@ -1,5 +1,9 @@
 __author__ = 'jmagady'
+from app import lt
+import tempfile
 
+# misc config
+tempdir = tempfile.mkdtemp(prefix="yts.")
 
 # YTS URI Configuration
 YTS_API_BASE = "https://yts.to/api/v2/"
@@ -45,3 +49,13 @@ YTS_WEB_T_WORKERS = 10
 # Args Builder
 YTS_DESC_ARGS = "This program ties into YTS api and builds a database. \
 It can also send magnetlinks to transmission for downloading"
+
+# libtorrent config
+params = {
+    'save_path': tempdir,
+    'duplicate_is_error': True,
+    'storage_mode': lt.storage_mode_t(2),
+    'paused': False,
+    'auto_managed': True,
+    'duplicate_is_error': True
+}

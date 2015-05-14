@@ -167,3 +167,13 @@ class YTS_QUALITY(Base):
         if not obj:
             obj = YTS_QUALITY(quality=quality)
         return obj
+
+class YTS_RAW_FILES(Base):
+    __tablename__ = 'yts_raw_files'
+
+    id = Column(Integer, nullable=False, autoincrement=True, primary_key=True)
+    yts_torrent_hash_id = Column(Integer, ForeignKey('yts_torrent_hash.id'))
+    files = Column(String(200), nullable=False)
+
+    hash = relationship('YTS_TORRENT_HASH',
+                        backref='files')
