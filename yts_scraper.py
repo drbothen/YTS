@@ -1,7 +1,7 @@
 __author__ = 'jmagady'
 
 from app import yts_api, parg, s
-from app.models import YTS_MOVIE, YTS_YEAR, YTS_MPA_RATING, YTS_LIBRARY_STATUS, YTS_GENRES, YTS_LANG, YTS_QUALITY, YTS_TORRENT_HASH
+from app.models import YTS_MOVIE, YTS_YEAR, YTS_MPA_RATING, YTS_LIBRARY_STATUS, YTS_GENRES, YTS_LANG, YTS_QUALITY, YTS_TORRENT_HASH, YTS_RAW_FILES
 from app.torrent_handel_func import meta2magnet, torrent2meta, meta2files
 import sys
 
@@ -41,20 +41,30 @@ for page in range(201, pagecount + 1):
             print("The movie: {Movie} has {tnum} torrents".format(Movie=movie['title'].encode('utf-8'), tnum=len(movie['torrents'])))
             mquality = []
             for torrent in movie['torrents']:
+
+
                 tentry = YTS_TORRENT_HASH(hash=torrent['hash'],
                                           size=torrent['size'],
                                           size_bytes=torrent['size_bytes'],
                                           date_uploaded=torrent['date_uploaded'])
                 tentry.quality = YTS_QUALITY.get(s,torrent['quality'])
                 tentry.movie = YTS_MOVIE.ret(s, movie['title'])
+
+                metadata = torrent2meta(torrent['url'])
+                if metadata:
+                    magnet = meta2magnet(metadata)
+                    tfiles = []
+                    for files in meta2files(metadata):
+                        tfiles.append(YTS_RAW_FILES(file=files))
+                else:
+                    magnet = False
+
+                tentry.magnet = magnet
+                tentry.files = tfiles
+
                 s.add(tentry)
                 s.commit()
-                metadata = torrent2meta(torrent['url'])
-                if not metadata:
-                    continue
-                magnet = meta2magnet(metadata)
-                for files in meta2files(metadata):
-                    print files
+
 
 
 

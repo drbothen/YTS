@@ -41,6 +41,8 @@ class YTS_MOVIE(Base):
     genres = relationship('YTS_GENRES',
                           backref='movies',
                           secondary=yts_genres_mapper)
+    torrents = relationship('YTS_TORRENT_HASH',
+                         backref='movie')
     #torrent = relationship('YTS_TORRENT_HASH',
      #                      backref='movies',
       #                     secondary=yts_mapper_main)
@@ -137,16 +139,19 @@ class YTS_TORRENT_HASH(Base):
     id = Column(Integer, nullable=False, autoincrement=True, primary_key=True)
     yts_movie_id = Column(Integer, ForeignKey('yts_movie.id'))
     hash = Column(String(512), nullable=False)
+    magnet = Column(String(600))
     size = Column(String(20), nullable=False)
     size_bytes = Column(Integer, nullable=False)
     yts_quality_id = Column(Integer, ForeignKey('yts_quality.id'))
     date_uploaded = Column(String(50), nullable=False)
     db_t_date_added = Column(DateTime, nullable=False, default=func.now())
 
-    quality = relationship('YTS_QUALITY',
-                           backref='torrents')
-    movie = relationship('YTS_MOVIE',
-                         backref='torrents')
+    #quality = relationship('YTS_QUALITY',
+                           #backref='torrents')
+    #movie = relationship('YTS_MOVIE',
+                        # backref='torrents')
+    files = relationship('YTS_RAW_FILES',
+                         backref='hash')
 
     @staticmethod  # Checks to see if entry is already in Database
     def get(dbsession, hash, size, size_bytes, date_uploaded):
@@ -161,6 +166,9 @@ class YTS_QUALITY(Base):
     id = Column(Integer, nullable=False, autoincrement=True, primary_key=True)
     quality = Column(String(20), nullable=False)
 
+    torrents = relationship('YTS_TORRENT_HASH',
+                            backref='quality')
+
     @staticmethod  # Checks to see if entry is already in Database
     def get(dbsession, quality):
         obj = dbsession.query(YTS_QUALITY).filter(YTS_QUALITY.quality == quality).first()
@@ -173,7 +181,7 @@ class YTS_RAW_FILES(Base):
 
     id = Column(Integer, nullable=False, autoincrement=True, primary_key=True)
     yts_torrent_hash_id = Column(Integer, ForeignKey('yts_torrent_hash.id'))
-    files = Column(String(200), nullable=False)
+    file = Column(String(200), nullable=False)
 
-    hash = relationship('YTS_TORRENT_HASH',
-                        backref='files')
+    #hash = relationship('YTS_TORRENT_HASH',
+                        #backref='files')
