@@ -2,7 +2,7 @@ __author__ = 'jmagady'
 
 
 from requests import get
-from config import YTS_API_BASE, YTS_LIST_MOVIES_ENDPOINTS, YTS_LIST_UPCOMING
+from app.config import YTS_API_BASE, YTS_LIST_MOVIES_ENDPOINTS, YTS_LIST_UPCOMING
 
 
 class Rawyts:

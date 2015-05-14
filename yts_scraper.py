@@ -2,6 +2,7 @@ __author__ = 'jmagady'
 
 from app import yts_api, parg, s
 from app.models import YTS_MOVIE, YTS_YEAR, YTS_MPA_RATING, YTS_LIBRARY_STATUS, YTS_GENRES, YTS_LANG, YTS_QUALITY, YTS_TORRENT_HASH
+from app.torrent_handel_func import magnet2tor, tor2rawfile
 import sys
 
 def main():
@@ -48,6 +49,10 @@ for page in range(1, pagecount + 1):
                 tentry.movie = YTS_MOVIE.ret(s, movie['title'])
                 s.add(tentry)
                 s.commit()
+                tor = magnet2tor('magnet:?xt=urn:btih:' + torrent['hash'])
+                files = tor2rawfile(tor)
+                print(files)
+
 
         else:
             print("The movie: {Movie} has no torrents".format(Movie=movie['title'].encode('utf-8')))
