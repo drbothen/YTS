@@ -9,7 +9,11 @@ import itertools
 
 
 def torrent2meta(torurl):
-    return bencode.bdecode(get(torurl).content)
+    try:
+        return bencode.bdecode(get(torurl).content)
+    except bencode.BTFailure:
+        return False
+
 
 def meta2magnet(metadata):
     hashcontent = bencode.bencode(metadata['info'])
@@ -24,4 +28,4 @@ def meta2files(metadata):
     if 'files' in metadata['info'].keys():
         return itertools.chain(*(f["path"] for f in metadata["info"]["files"]))
     else:
-        return metadata['info']['name']
+        return [metadata['info']['name']]

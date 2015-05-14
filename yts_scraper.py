@@ -18,7 +18,7 @@ def main():
 #ytsData = yts_api.raw_movie_list()
 pagecount = yts_api.raw_requests_page_count()
 
-for page in range(1, pagecount + 1):
+for page in range(201, pagecount + 1):
     ytsData = yts_api.raw_movie_list(page=page)
     print('currently on page {page} of {pages}'.format(page=page,pages=pagecount))
 
@@ -50,6 +50,8 @@ for page in range(1, pagecount + 1):
                 s.add(tentry)
                 s.commit()
                 metadata = torrent2meta(torrent['url'])
+                if not metadata:
+                    continue
                 magnet = meta2magnet(metadata)
                 for files in meta2files(metadata):
                     print files
