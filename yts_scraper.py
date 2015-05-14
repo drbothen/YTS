@@ -34,10 +34,25 @@ for page in range(1, pagecount + 1):
         for genre in movie['genres']:
             lgenre.append(YTS_GENRES.get(s, genre))
         mentry.genres = lgenre
-
-        print("The movie: {Movie} has {tnum} torrents".format(Movie=movie['title'], tnum=len(movie['torrents'])))
         s.add(mentry)
         s.commit()
+        if 'torrents' in movie.keys():
+            print("The movie: {Movie} has {tnum} torrents".format(Movie=movie['title'].encode('utf-8'), tnum=len(movie['torrents'])))
+            mquality = []
+            for torrent in movie['torrents']:
+                tentry = YTS_TORRENT_HASH(hash=torrent['hash'],
+                                          size=torrent['size'],
+                                          size_bytes=torrent['size_bytes'],
+                                          date_uploaded=torrent['date_uploaded'])
+                tentry.quality = YTS_QUALITY.get(s,torrent['quality'])
+                tentry.movie = YTS_MOVIE.ret(s, movie['title'])
+                s.add(tentry)
+                s.commit()
+
+        else:
+            print("The movie: {Movie} has no torrents".format(Movie=movie['title'].encode('utf-8')))
+
+
 
 
 

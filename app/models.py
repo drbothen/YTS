@@ -41,12 +41,19 @@ class YTS_MOVIE(Base):
     genres = relationship('YTS_GENRES',
                           backref='movies',
                           secondary=yts_genres_mapper)
-    torrent = relationship('YTS_TORRENT_HASH',
-                           backref='movies',
-                           secondary=yts_mapper_main)
-    quality = relationship('YTS_QUALITY',
-                           backref='movies',
-                           secondary=yts_mapper_main)
+    #torrent = relationship('YTS_TORRENT_HASH',
+     #                      backref='movies',
+      #                     secondary=yts_mapper_main)
+    #quality = relationship('YTS_QUALITY',
+     #                      backref='movies',
+      #                     secondary=yts_mapper_main)
+
+    @staticmethod  # Checks to see if entry is already in Database
+    def ret(dbsession, title):
+        obj = dbsession.query(YTS_MOVIE).filter(YTS_MOVIE.title == title).first()
+
+        return obj
+
 
     def __repr__(self):
         return '<YTS_MOVIES {name}>'.format(name=self.name)
@@ -128,11 +135,18 @@ class YTS_TORRENT_HASH(Base):
     __tablename__ = 'yts_torrent_hash'
 
     id = Column(Integer, nullable=False, autoincrement=True, primary_key=True)
+    yts_movie_id = Column(Integer, ForeignKey('yts_movie.id'))
     hash = Column(String(512), nullable=False)
     size = Column(String(20), nullable=False)
     size_bytes = Column(Integer, nullable=False)
-    date_uploaded = Column(DateTime, nullable=False)
+    yts_quality_id = Column(Integer, ForeignKey('yts_quality.id'))
+    date_uploaded = Column(String(50), nullable=False)
     db_t_date_added = Column(DateTime, nullable=False, default=func.now())
+
+    quality = relationship('YTS_QUALITY',
+                           backref='torrents')
+    movie = relationship('YTS_MOVIE',
+                         backref='torrents')
 
     @staticmethod  # Checks to see if entry is already in Database
     def get(dbsession, hash, size, size_bytes, date_uploaded):
