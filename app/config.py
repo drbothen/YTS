@@ -1,5 +1,5 @@
 __author__ = 'jmagady'
-from app import lt
+#from app import lt
 import tempfile
 
 # misc config
@@ -50,12 +50,27 @@ YTS_WEB_T_WORKERS = 10
 YTS_DESC_ARGS = "This program ties into YTS api and builds a database. \
 It can also send magnetlinks to transmission for downloading"
 
-# libtorrent config
-params = {
-    'save_path': tempdir,
-    'duplicate_is_error': True,
-    'storage_mode': lt.storage_mode_t(2),
-    'paused': False,
-    'auto_managed': True,
-    'duplicate_is_error': True
-}
+# libtorrent config (experimental)
+#params = {
+#    'trackers': ['http://exodus.desync.com:6969/announce',
+#                 'udp://tracker.openbittorrent.com:80/announce',
+#                 'udp://open.demonii.com:1337/announce',
+#                 'udp://exodus.desync.com:6969/announce',
+#                 'udp://tracker.yify-torrents.com/announce'],
+#    'save_path': tempdir,
+#    'duplicate_is_error': True,
+#    'storage_mode': lt.storage_mode_t(2),
+#   'paused': False,
+#    'auto_managed': True,
+#    'duplicate_is_error': True
+#}
+
+# magnet creation params
+trackers = ['udp://open.demonii.com:1337',
+            'udp://tracker.istole.it:80',
+            'http://tracker.yify-torrents.com/announce',
+            'udp://tracker.publicbt.com:80',
+            'udp://tracker.openbittorrent.com:80',
+            'udp://tracker.coppersurfer.tk:6969',
+            'udp://exodus.desync.com:6969',
+            'http://exodus.desync.com:6969/announce']

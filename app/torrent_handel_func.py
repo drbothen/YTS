@@ -1,30 +1,27 @@
 __author__ = 'jmagady'
 
-from app import lt, lses
-from app.config import params, tempdir
-from time import sleep
+from requests import get
+from urllib import urlencode
+from config import trackers
+import bencode
+import hashlib
+import itertools
 
 
-def magnet2tor(magnet):
-    handle = lt.add_magnet_uri(lses, magnet, params)
-    count = 0
-    while not handle.has_metadata():
-        status = handle.status()
-        if status.active_time > 600:
-            count += 1
-            lses.remove_torrent(handle)
-            handle = lt.add_magnet_uri(lses, magnet, params)
-        if count > 2:
-            lses.remove_torrent(handle)
-            return False
-    handle.pause()
-    return handle
+def torrent2meta(torurl):
+    return bencode.bdecode(get(torurl).content)
 
-def tor2rawfile(torhandle):
-    if torhandle.has_metadata():
-        torinfo = torhandle.get_torrent_info()
-        filelist = []
-        for f in torinfo.files():
-            fsplit = f.path.split('//')
-            filelist.append(fsplit[-1])
-    return filelist
+def meta2magnet(metadata):
+    hashcontent = bencode.bencode(metadata['info'])
+    digest = hashlib.sha1(hashcontent).hexdigest()
+
+    params = {'dn': metadata['info']['name'],
+              'tr': trackers}
+    paramstr = urlencode(params, doseq=True)
+    return 'magnet:?xt=urn:btih:{hash}&{param}'.format(hash=digest,param=paramstr)
+
+def meta2files(metadata):
+    if 'files' in metadata['info'].keys():
+        return itertools.chain(*(f["path"] for f in metadata["info"]["files"]))
+    else:
+        return metadata['info']['name']

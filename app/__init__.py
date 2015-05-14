@@ -1,6 +1,6 @@
 __author__ = 'jmagady'
 
-import libtorrent as lt
+
 from app import yts_class, args_builder
 from app.models import Base
 from sqlalchemy import create_engine
@@ -15,4 +15,4 @@ engine = create_engine("sqlite:///db.sqlite")
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 s = Session()
-lses = lt.session()
+#lses = lt.session()
